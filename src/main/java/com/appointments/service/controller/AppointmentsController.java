@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -24,9 +25,29 @@ public class AppointmentsController {
     ) throws SQLException {
 
         String organization = organizationRequestDTO.getOrganization();
+        Timestamp from = Timestamp.valueOf(organizationRequestDTO.getStartTime());
+        Timestamp to = Timestamp.valueOf(organizationRequestDTO.getEndTime());
 
         return appointmentTransactionManager
-                .getAllAppointmentsPerOrganization(organization);
+                .getAllAppointmentsPerOrganization(organization, from, to);
+    }
+
+    @PostMapping(value = "/storeAppointment")
+    public Boolean storeAppointment(
+        @RequestBody AppointmentRequestDTO appointmentRequestDTO
+        ) throws SQLException {
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentId(appointmentRequestDTO.getAppointmentId());
+        appointment.setOrganization(appointmentRequestDTO.getOrganization());
+        appointment.setUserName(appointmentRequestDTO.getUserName());
+        appointment.setUserId(appointmentRequestDTO.getUserId());
+        appointment.setAdminName(appointmentRequestDTO.getAdminName());
+        appointment.setAdminId(appointmentRequestDTO.getAdminId());
+        appointment.setStartTime(Timestamp.valueOf(appointmentRequestDTO.getStartTime()));
+        appointment.setEndTime(Timestamp.valueOf(appointmentRequestDTO.getEndTime()));
+
+        return appointmentTransactionManager.storeAppointment(appointment);
     }
 
 }
