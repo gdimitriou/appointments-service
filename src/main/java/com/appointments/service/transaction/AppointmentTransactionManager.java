@@ -1,8 +1,11 @@
 package com.appointments.service.transaction;
 
 import com.appointments.service.model.Appointment;
+import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
+import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.result.ResultIterable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +28,11 @@ public class AppointmentTransactionManager {
 
     private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root1234");
 
-    public List<Appointment> getAllAppointmentsPerOrganization(String organization, Timestamp from, Timestamp to) throws SQLException {
+    public List<Appointment> getAllAppointmentsPerOrganization(OrganizationRequestDTO organizationRequestDTO) throws SQLException {
+
+        String organization = organizationRequestDTO.getOrganization();
+        Timestamp from = Timestamp.valueOf(organizationRequestDTO.getStartTime());
+        Timestamp to = Timestamp.valueOf(organizationRequestDTO.getEndTime());
 
         String sqlQueryCheckIfTableExists = " SELECT count(*) " +
                                             " FROM information_schema.TABLES " +
@@ -100,6 +107,53 @@ public class AppointmentTransactionManager {
                 .execute();
 
         return Boolean.valueOf(true);
+
+    }
+
+    public Appointment getAppointmentPerId(OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+
+        String appointmentId = oneAppointmentByIdRequestDTO.getAppointmentId();
+        String organization = oneAppointmentByIdRequestDTO.getOrganization();
+
+        String sqlQueryGetAppointmentById = "select * from "+organization+" where appointmentId = '"+appointmentId+"'";
+
+        Handle handle = jdbi.open();
+
+        Appointment appointment = handle.createQuery(sqlQueryGetAppointmentById)
+                .map((rs, ctx) -> new Appointment(
+                        rs.getString("appointmentId"),
+                        rs.getString("organization"),
+                        rs.getString("userName"),
+                        rs.getString("userId"),
+                        rs.getString("adminName"),
+                        rs.getString("adminId"),
+                        rs.getTimestamp("startTime"),
+                        rs.getTimestamp("endTime")
+                ))
+                .findOnly();
+
+        handle.close();
+
+        return appointment;
+
+    }
+
+    public List<Appointment> getAllAppointmentsPerUser() {
+
+        return null;
+
+    }
+
+    public void deleteAppointmentPerId(OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+
+        String appointmentId = oneAppointmentByIdRequestDTO.getAppointmentId();
+        String organization = oneAppointmentByIdRequestDTO.getOrganization();
+
+        String sqlQueryDeleteAppointmentById = "delete from "+organization+" where appointmentId = '"+appointmentId+"'";
+
+        Handle handle = jdbi.open();
+
+        handle.createUpdate(sqlQueryDeleteAppointmentById).execute();
 
     }
 }

@@ -2,16 +2,16 @@ package com.appointments.service.controller;
 
 import com.appointments.service.model.Appointment;
 import com.appointments.service.model.DTO.AppointmentRequestDTO;
+import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import com.appointments.service.transaction.AppointmentTransactionManager;
+import org.jdbi.v3.core.result.ResultIterable;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,13 +35,31 @@ public class AppointmentsController {
             @RequestBody OrganizationRequestDTO organizationRequestDTO
     ) throws SQLException {
 
-        String organization = organizationRequestDTO.getOrganization();
-        Timestamp from = Timestamp.valueOf(organizationRequestDTO.getStartTime());
-        Timestamp to = Timestamp.valueOf(organizationRequestDTO.getEndTime());
-
         return appointmentTransactionManager
-                .getAllAppointmentsPerOrganization(organization, from, to);
+                .getAllAppointmentsPerOrganization(organizationRequestDTO);
     }
+
+    @PostMapping(value = "/getOneAppointment")
+    public Appointment getOneAppointment(
+            @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+
+        return appointmentTransactionManager.getAppointmentPerId(oneAppointmentByIdRequestDTO);
+    }
+
+    @PostMapping(value = "/getAllAppointmentsPerUser")
+    public List<Appointment> getAllAppointmentsPerUser(
+            @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+
+        return appointmentTransactionManager.getAllAppointmentsPerUser();
+    }
+
+    @PostMapping(value = "/deleteOneAppointment")
+    public void deleteOneAppointment(
+            @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+
+        appointmentTransactionManager.deleteAppointmentPerId(oneAppointmentByIdRequestDTO);
+    }
+
 
     @PostMapping(value = "/storeAppointment")
     public Boolean storeAppointment(
@@ -86,8 +104,6 @@ public class AppointmentsController {
         } else {
             return "Something went wrong";
         }
-
-
     }
 
 }
