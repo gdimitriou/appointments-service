@@ -3,6 +3,7 @@ package com.appointments.service.transaction;
 import com.appointments.service.model.Appointment;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -11,6 +12,16 @@ import java.util.List;
 
 @Service
 public class AppointmentTransactionManager {
+
+//    @Value("${url.db}")
+//    private String url;
+//
+//    @Value("${url.username}")
+//    private String username;
+//
+//    @Value("${url.password}")
+//    private String password;
+
 
     private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root1234");
 
