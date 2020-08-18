@@ -1,17 +1,16 @@
 package com.appointments.service.controller;
 
 import com.appointments.service.model.Appointment;
+import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.AppointmentRequestDTO;
 import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import com.appointments.service.transaction.AppointmentTransactionManager;
-import org.jdbi.v3.core.result.ResultIterable;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -48,9 +47,9 @@ public class AppointmentsController {
 
     @PostMapping(value = "/getAllAppointmentsPerUser")
     public List<Appointment> getAllAppointmentsPerUser(
-            @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
+            @RequestBody AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) {
 
-        return appointmentTransactionManager.getAllAppointmentsPerUser();
+        return appointmentTransactionManager.getAllAppointmentsPerUser(allAppointmentsPerUserDTO);
     }
 
     @PostMapping(value = "/deleteOneAppointment")

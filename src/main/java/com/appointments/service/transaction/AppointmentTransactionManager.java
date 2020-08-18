@@ -1,6 +1,7 @@
 package com.appointments.service.transaction;
 
 import com.appointments.service.model.Appointment;
+import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import org.jdbi.v3.core.Handle;
@@ -138,10 +139,31 @@ public class AppointmentTransactionManager {
 
     }
 
-    public List<Appointment> getAllAppointmentsPerUser() {
+    public List<Appointment> getAllAppointmentsPerUser(AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) {
 
-        return null;
+        String userId = allAppointmentsPerUserDTO.getUserId();
+        String organization = allAppointmentsPerUserDTO.getOrganization();
 
+        String sqlQueryGetAppointsPerUser = "select * from "+organization+" where userId = '"+userId+"'";
+
+        Handle handle = jdbi.open();
+
+        List<Appointment> appointments = handle.createQuery(sqlQueryGetAppointsPerUser)
+                .map((rs, ctx) -> new Appointment(
+                        rs.getString("appointmentId"),
+                        rs.getString("organization"),
+                        rs.getString("userName"),
+                        rs.getString("userId"),
+                        rs.getString("adminName"),
+                        rs.getString("adminId"),
+                        rs.getTimestamp("startTime"),
+                        rs.getTimestamp("endTime")
+                ))
+                .list();
+
+        handle.close();
+
+        return appointments;
     }
 
     public void deleteAppointmentPerId(OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
