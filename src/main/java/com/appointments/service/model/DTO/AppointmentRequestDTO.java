@@ -3,7 +3,7 @@ package com.appointments.service.model.DTO;
 public class AppointmentRequestDTO {
 
     private String appointmentId;
-    private String organization;
+    private String organizationSelected;
     private String userName;
     private String userId;
     private String adminName;
@@ -22,12 +22,12 @@ public class AppointmentRequestDTO {
         this.appointmentId = appointmentId;
     }
 
-    public String getOrganization() {
-        return organization;
+    public String getOrganizationSelected() {
+        return organizationSelected;
     }
 
-    public void setOrganization(String organization) {
-        this.organization = organization;
+    public void setOrganizationSelected(String organizationSelected) {
+        this.organizationSelected = organizationSelected;
     }
 
     public String getUserName() {

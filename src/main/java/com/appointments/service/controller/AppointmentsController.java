@@ -8,6 +8,7 @@ import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import com.appointments.service.transaction.AppointmentTransactionManager;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,8 @@ public class AppointmentsController {
     @Autowired
     AppointmentTransactionManager appointmentTransactionManager;
 
-    @PostMapping(value = "/getAllAppointments")
+    @CrossOrigin
+    @PostMapping(value = "/getAllAppointmentsWithDate")
     public List<Appointment> getAllAppointments(
             @RequestBody OrganizationRequestDTO organizationRequestDTO
     ) throws SQLException {
@@ -38,6 +40,7 @@ public class AppointmentsController {
                 .getAllAppointmentsPerOrganization(organizationRequestDTO);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/getOneAppointment")
     public Appointment getOneAppointment(
             @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
@@ -45,13 +48,15 @@ public class AppointmentsController {
         return appointmentTransactionManager.getAppointmentPerId(oneAppointmentByIdRequestDTO);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/getAllAppointmentsPerUser")
-    public List<Appointment> getAllAppointmentsPerUser(
+    public List<Appointment>  getAllAppointmentsPerUser(
             @RequestBody AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) {
 
         return appointmentTransactionManager.getAllAppointmentsPerUser(allAppointmentsPerUserDTO);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/deleteOneAppointment")
     public void deleteOneAppointment(
             @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
@@ -60,6 +65,7 @@ public class AppointmentsController {
     }
 
 
+    @CrossOrigin
     @PostMapping(value = "/storeAppointment")
     public Boolean storeAppointment(
         @RequestBody AppointmentRequestDTO appointmentRequestDTO
@@ -67,7 +73,7 @@ public class AppointmentsController {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(appointmentRequestDTO.getAppointmentId());
-        appointment.setOrganization(appointmentRequestDTO.getOrganization());
+        appointment.setOrganizationSelected(appointmentRequestDTO.getOrganizationSelected());
         appointment.setUserName(appointmentRequestDTO.getUserName());
         appointment.setUserId(appointmentRequestDTO.getUserId());
         appointment.setAdminName(appointmentRequestDTO.getAdminName());
@@ -77,7 +83,7 @@ public class AppointmentsController {
 
         return appointmentTransactionManager.storeAppointment(appointment);
     }
-
+    @CrossOrigin
     @GetMapping(value = "/organizations")
     private String sendGET() throws IOException, JSONException {
 

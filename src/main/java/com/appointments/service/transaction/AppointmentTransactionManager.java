@@ -1,13 +1,12 @@
 package com.appointments.service.transaction;
 
+import com.appointments.service.GreekToGreeklish;
 import com.appointments.service.model.Appointment;
 import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.result.ResultIterable;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -27,11 +26,11 @@ public class AppointmentTransactionManager {
 //    private String password;
 
 
-    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root1234");
+    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root");
 
     public List<Appointment> getAllAppointmentsPerOrganization(OrganizationRequestDTO organizationRequestDTO) throws SQLException {
 
-        String organization = organizationRequestDTO.getOrganization();
+        String organization = GreekToGreeklish.convert(organizationRequestDTO.getOrganization());;
         Timestamp from = Timestamp.valueOf(organizationRequestDTO.getStartTime());
         Timestamp to = Timestamp.valueOf(organizationRequestDTO.getEndTime());
 
@@ -39,7 +38,7 @@ public class AppointmentTransactionManager {
                                             " FROM information_schema.TABLES " +
                                             " WHERE (TABLE_SCHEMA = 'people') AND (TABLE_NAME = '"+organization+"') " ;
 
-        String sqlQueryGetAllAppointments = " select * from " + organization +
+        String sqlQueryGetAllAppointments = " select * from "+organization+
                                             " where startTime >= " +"'"+from+"'" +
                                             " and endTime < " + "'"+to+"'";
 
@@ -87,7 +86,7 @@ public class AppointmentTransactionManager {
 
     public Boolean storeAppointment(Appointment appointment){
 
-        String organization = appointment.getOrganization();
+        String organization =  GreekToGreeklish.convert(appointment.getOrganizationSelected());
 
         String sqlQueryStoreAppointment = " insert into " + organization +
                                           " values (:appointmentId, :organization, " +
@@ -98,7 +97,7 @@ public class AppointmentTransactionManager {
 
         handle.createUpdate(sqlQueryStoreAppointment)
                 .bind("appointmentId", appointment.getAppointmentId())
-                .bind("organization", appointment.getOrganization())
+                .bind("organization", appointment.getOrganizationSelected())
                 .bind("userName", appointment.getUserName())
                 .bind("userId", appointment.getUserId())
                 .bind("adminName", appointment.getAdminName())
@@ -114,9 +113,10 @@ public class AppointmentTransactionManager {
     public Appointment getAppointmentPerId(OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
 
         String appointmentId = oneAppointmentByIdRequestDTO.getAppointmentId();
-        String organization = oneAppointmentByIdRequestDTO.getOrganization();
+        String organization =  GreekToGreeklish.convert(oneAppointmentByIdRequestDTO.getOrganization());
 
-        String sqlQueryGetAppointmentById = "select * from "+organization+" where appointmentId = '"+appointmentId+"'";
+
+        String sqlQueryGetAppointmentById = "select * from "+ organization+" where appointmentId = '"+appointmentId+"'";
 
         Handle handle = jdbi.open();
 
@@ -142,9 +142,9 @@ public class AppointmentTransactionManager {
     public List<Appointment> getAllAppointmentsPerUser(AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) {
 
         String userId = allAppointmentsPerUserDTO.getUserId();
-        String organization = allAppointmentsPerUserDTO.getOrganization();
+        String organization =  GreekToGreeklish.convert(allAppointmentsPerUserDTO.getOrganization());
 
-        String sqlQueryGetAppointsPerUser = "select * from "+organization+" where userId = '"+userId+"'";
+        String sqlQueryGetAppointsPerUser = "select * from "+ organization +" where userId = '"+userId+"'";
 
         Handle handle = jdbi.open();
 
@@ -169,7 +169,8 @@ public class AppointmentTransactionManager {
     public void deleteAppointmentPerId(OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
 
         String appointmentId = oneAppointmentByIdRequestDTO.getAppointmentId();
-        String organization = oneAppointmentByIdRequestDTO.getOrganization();
+        String organization =  GreekToGreeklish.convert(oneAppointmentByIdRequestDTO.getOrganization());
+
 
         String sqlQueryDeleteAppointmentById = "delete from "+organization+" where appointmentId = '"+appointmentId+"'";
 

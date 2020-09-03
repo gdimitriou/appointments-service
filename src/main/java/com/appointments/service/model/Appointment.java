@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class Appointment {
 
     private String appointmentId;
-    private String organization;
+    private String organizationSelected;
     private String userName;
     private String userId;
     private String adminName;
@@ -16,9 +16,9 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(String appointmentId, String organization, String userName, String userId, String adminName, String adminId, Timestamp startTime, Timestamp endTime) {
+    public Appointment(String appointmentId, String organizationSelected, String userName, String userId, String adminName, String adminId, Timestamp startTime, Timestamp endTime) {
         this.appointmentId = appointmentId;
-        this.organization = organization;
+        this.organizationSelected = organizationSelected;
         this.userName = userName;
         this.userId = userId;
         this.adminName = adminName;
@@ -35,12 +35,12 @@ public class Appointment {
         this.appointmentId = appointmentId;
     }
 
-    public String getOrganization() {
-        return organization;
+    public String getOrganizationSelected() {
+        return organizationSelected;
     }
 
-    public void setOrganization(String organization) {
-        this.organization = organization;
+    public void setOrganizationSelected(String organizationSelected) {
+        this.organizationSelected = organizationSelected;
     }
 
     public String getUserName() {
