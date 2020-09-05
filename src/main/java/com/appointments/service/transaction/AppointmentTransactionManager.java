@@ -84,10 +84,10 @@ public class AppointmentTransactionManager {
 
             handle.execute(" create table " + organization +
                     " ( " +
-                    " appointmentId int auto_increment, " +  // TODO: check auto increment
+                    " appointmentId int auto_increment primary key , " +  // TODO: check auto increment
                     " organization varchar(100) null, " +
                     " userName varchar(50) null," +
-                    " userId int null, " +
+                    " userId varchar(50) null, " +
                     " adminName varchar(50) null, " +
                     " adminId int null, " +
                     " startTime timestamp null, " +
