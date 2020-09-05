@@ -34,37 +34,13 @@ public class AppointmentTransactionManager {
         Timestamp from = Timestamp.valueOf(organizationRequestDTO.getStartTime());
         Timestamp to = Timestamp.valueOf(organizationRequestDTO.getEndTime());
 
-        String sqlQueryCheckIfTableExists = " SELECT count(*) " +
-                                            " FROM information_schema.TABLES " +
-                                            " WHERE (TABLE_SCHEMA = 'people') AND (TABLE_NAME = '"+organization+"') " ;
+
 
         String sqlQueryGetAllAppointments = " select * from "+organization+
                                             " where startTime >= " +"'"+from+"'" +
                                             " and endTime < " + "'"+to+"'";
 
         Handle handle = jdbi.open();
-
-        Integer tableExists = handle
-                .select(sqlQueryCheckIfTableExists)
-                .mapTo(Integer.class)
-                .findOnly();
-
-        if (tableExists == 0) {
-
-            handle.execute(" create table " + organization +
-                                " ( " +
-                                " appointmentId int null, " +
-                                " organization varchar(100) null, " +
-                                " userName varchar(50) null," +
-                                " userId int null, " +
-                                " adminName varchar(50) null, " +
-                                " adminId int null, " +
-                                " startTime timestamp null, " +
-                                " endTime timestamp null " +
-                                " ) "
-            );
-
-        }
 
         List<Appointment> appointments = handle.createQuery(sqlQueryGetAllAppointments)
                 .map((rs, ctx) -> new Appointment(
@@ -86,14 +62,40 @@ public class AppointmentTransactionManager {
 
     public Boolean storeAppointment(Appointment appointment){
 
-        String organization =  GreekToGreeklish.convert(appointment.getOrganizationSelected());
+        String organization = GreekToGreeklish.convert(appointment.getOrganizationSelected());
 
         String sqlQueryStoreAppointment = " insert into " + organization +
                                           " values (:appointmentId, :organization, " +
                                           " :userName, :userId, :adminName, :adminId, " +
                                           " :timeStart, :timeEnd)";
 
+        String sqlQueryCheckIfTableExists = " SELECT count(*) " +
+                " FROM information_schema.TABLES " +
+                " WHERE (TABLE_SCHEMA = 'people') AND (TABLE_NAME = '"+organization+"') " ;
+
         Handle handle = jdbi.open();
+
+        Integer tableExists = handle
+                .select(sqlQueryCheckIfTableExists)
+                .mapTo(Integer.class)
+                .findOnly();
+
+        if (tableExists == 0) {
+
+            handle.execute(" create table " + organization +
+                    " ( " +
+                    " appointmentId int auto_increment, " +  // TODO: check auto increment
+                    " organization varchar(100) null, " +
+                    " userName varchar(50) null," +
+                    " userId int null, " +
+                    " adminName varchar(50) null, " +
+                    " adminId int null, " +
+                    " startTime timestamp null, " +
+                    " endTime timestamp null " +
+                    " ) "
+            );
+
+        }
 
         handle.createUpdate(sqlQueryStoreAppointment)
                 .bind("appointmentId", appointment.getAppointmentId())
