@@ -57,7 +57,7 @@ public class AppointmentsController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "/deleteOneAppointment")
+    @DeleteMapping(value = "/deleteOneAppointment")
     public void deleteOneAppointment(
             @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
 
