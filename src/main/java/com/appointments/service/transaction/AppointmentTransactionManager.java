@@ -5,6 +5,8 @@ import com.appointments.service.model.Appointment;
 import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
+import com.appointments.service.model.Organization;
+import com.appointments.service.model.OrganizationList;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -186,4 +188,29 @@ public class AppointmentTransactionManager {
 
     }
 
+    public void storeAllOrganizationsToDB(List<OrganizationList> orgs) {
+
+        String sqlQueryStoreOrganization = "insert into Organizations" +
+                " values (:code, :preferredLabel, :subOrganizationOf)";
+
+        List<Organization> organizations = orgs.get(0).getData();
+
+        organizations.stream().forEach(
+                organization -> {
+                    String code = organization.getCode();
+                    String preferredLabel = organization.getPreferredLabel();
+                    String subOrganizationOf = organization.getSubOrganizationOf();
+
+                    Handle handle = jdbi.open();
+
+                    handle.createUpdate(sqlQueryStoreOrganization)
+                            .bind("code", code)
+                            .bind("preferredLabel", preferredLabel)
+                            .bind("subOrganizationOf", subOrganizationOf)
+                            .execute();
+
+                    handle.close();
+
+                });
+    }
 }

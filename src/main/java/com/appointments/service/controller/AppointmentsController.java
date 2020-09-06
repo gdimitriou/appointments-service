@@ -140,6 +140,8 @@ public class AppointmentsController {
             ObjectMapper mapper = new ObjectMapper();
             List<OrganizationList> orgs = Arrays.asList(mapper.readValue(response.toString(), OrganizationList.class));
 
+            appointmentTransactionManager.storeAllOrganizationsToDB(orgs);
+
             return orgs;
         } else {
             return null;
