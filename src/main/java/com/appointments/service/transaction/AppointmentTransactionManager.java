@@ -5,10 +5,14 @@ import com.appointments.service.model.Appointment;
 import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -26,7 +30,7 @@ public class AppointmentTransactionManager {
 //    private String password;
 
 
-    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root");
+    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root1234");
 
     public List<Appointment> getAllAppointmentsPerOrganization(OrganizationRequestDTO organizationRequestDTO) throws SQLException {
 
@@ -181,4 +185,5 @@ public class AppointmentTransactionManager {
         handle.createUpdate(sqlQueryDeleteAppointmentById).execute();
 
     }
+
 }
