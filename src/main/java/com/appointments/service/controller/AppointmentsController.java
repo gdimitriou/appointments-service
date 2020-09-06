@@ -148,4 +148,10 @@ public class AppointmentsController {
         }
     }
 
+    @CrossOrigin
+    @GetMapping(value = "/getAllOrganizationsFromDatabase")
+    public List<Organization>  getAllOrganizationsFromDatabase(){
+        return appointmentTransactionManager.getAllOrganizationsFromDatabase();
+    }
+
 }

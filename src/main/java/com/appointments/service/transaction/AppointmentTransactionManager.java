@@ -213,4 +213,25 @@ public class AppointmentTransactionManager {
 
                 });
     }
+
+    public List<Organization> getAllOrganizationsFromDatabase() {
+
+        String sqlQueryGetOrganizationsFromDatabase = "select * from Organizations";
+
+        Handle handle = jdbi.open();
+
+        List<Organization> organizations = handle.createQuery(sqlQueryGetOrganizationsFromDatabase)
+                .map((rs, ctx) -> new Organization(
+                        rs.getString("code"),
+                        rs.getString("preferredLabel"),
+                        rs.getString("subOrganizationOf")
+
+                ))
+                .list();
+
+        handle.close();
+
+        return organizations;
+
+    }
 }

@@ -30,6 +30,15 @@ public class Organization {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    public Organization() {
+    }
+
+    public Organization(String code, String preferredLabel, String subOrganizationOf) {
+        this.code = code;
+        this.preferredLabel = preferredLabel;
+        this.subOrganizationOf = subOrganizationOf;
+    }
+
     @JsonProperty("code")
     public String getCode() {
         return code;
