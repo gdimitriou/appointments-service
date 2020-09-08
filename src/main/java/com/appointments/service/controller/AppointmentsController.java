@@ -1,5 +1,6 @@
 package com.appointments.service.controller;
 
+import com.appointments.service.email.EmailManager;
 import com.appointments.service.model.Appointment;
 import com.appointments.service.model.DTO.AllAppointmentsPerUserDTO;
 import com.appointments.service.model.DTO.AppointmentRequestDTO;
@@ -9,7 +10,8 @@ import com.appointments.service.model.Organization;
 import com.appointments.service.model.OrganizationList;
 import com.appointments.service.transaction.AppointmentTransactionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+
+import java.io.IOException;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -75,7 +76,7 @@ public class AppointmentsController {
     @PostMapping(value = "/storeAppointment")
     public Boolean storeAppointment(
         @RequestBody AppointmentRequestDTO appointmentRequestDTO
-        ) throws SQLException {
+        ) throws SQLException, IOException, JSONException {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(appointmentRequestDTO.getAppointmentId());
@@ -88,8 +89,27 @@ public class AppointmentsController {
         appointment.setEndTime(Timestamp.valueOf(appointmentRequestDTO.getEndTime()));
         appointment.setEmail(appointmentRequestDTO.getEmail());
 
-        return appointmentTransactionManager.storeAppointment(appointment);
+        Boolean appointmentStored = appointmentTransactionManager.storeAppointment(appointment);
+
+        if(appointmentStored){
+
+            String start = Timestamp.valueOf(appointmentRequestDTO.getStartTime()).toString();
+            String end = Timestamp.valueOf(appointmentRequestDTO.getEndTime()).toString();
+            String email = appointmentRequestDTO.getEmail();
+
+            EmailManager emailManager = new EmailManager();
+            emailManager.sendEmailToUser(email, start, end);
+
+            return Boolean.valueOf(true);
+
+        } else {
+
+            return Boolean.valueOf(false);
+
+        }
     }
+
+
 
     @CrossOrigin
     @GetMapping(value = "/organizations")

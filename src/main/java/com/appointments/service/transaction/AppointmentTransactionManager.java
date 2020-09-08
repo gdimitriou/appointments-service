@@ -7,9 +7,7 @@ import com.appointments.service.model.DTO.OneAppointmentByIdRequestDTO;
 import com.appointments.service.model.DTO.OrganizationRequestDTO;
 import com.appointments.service.model.Organization;
 import com.appointments.service.model.OrganizationList;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Service;
