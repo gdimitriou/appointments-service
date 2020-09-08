@@ -32,7 +32,7 @@ public class AppointmentTransactionManager {
 //    private String password;
 
 
-    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "root1234");
+    private Jdbi jdbi = Jdbi.create("jdbc:mysql://localhost:3306/people?serverTimezone=UTC", "root", "rootroot");
 
     public List<Appointment> getAllAppointmentsPerOrganization(OrganizationRequestDTO organizationRequestDTO) throws SQLException {
 
@@ -57,7 +57,8 @@ public class AppointmentTransactionManager {
                         rs.getString("adminName"),
                         rs.getString("adminId"),
                         rs.getTimestamp("startTime"),
-                        rs.getTimestamp("endTime")
+                        rs.getTimestamp("endTime"),
+                        rs.getString("email")
                         ))
                 .list();
 
@@ -73,7 +74,7 @@ public class AppointmentTransactionManager {
         String sqlQueryStoreAppointment = " insert into " + organization +
                                           " values (:appointmentId, :organization, " +
                                           " :userName, :userId, :adminName, :adminId, " +
-                                          " :timeStart, :timeEnd)";
+                                          " :timeStart, :timeEnd, :email)";
 
         String sqlQueryCheckIfTableExists = " SELECT count(*) " +
                 " FROM information_schema.TABLES " +
@@ -97,7 +98,8 @@ public class AppointmentTransactionManager {
                     " adminName varchar(50) null, " +
                     " adminId int null, " +
                     " startTime timestamp null, " +
-                    " endTime timestamp null " +
+                    " endTime timestamp null, " +
+                    " email varchar(50) null " +
                     " ) "
             );
 
@@ -112,6 +114,7 @@ public class AppointmentTransactionManager {
                 .bind("adminId", appointment.getAppointmentId())
                 .bind("timeStart", appointment.getStartTime())
                 .bind("timeEnd", appointment.getEndTime())
+                .bind("email", appointment.getEmail())
                 .execute();
 
         return Boolean.valueOf(true);

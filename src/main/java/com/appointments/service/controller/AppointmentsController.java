@@ -9,6 +9,7 @@ import com.appointments.service.model.Organization;
 import com.appointments.service.model.OrganizationList;
 import com.appointments.service.transaction.AppointmentTransactionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class AppointmentsController {
     AppointmentTransactionManager appointmentTransactionManager;
 
     @CrossOrigin
-    @PostMapping(value = "/getAllAppointmentsWithDate")
+    @PostMapping(value = "/getAllAppointments")
     public List<Appointment> getAllAppointments(
             @RequestBody OrganizationRequestDTO organizationRequestDTO
     ) throws SQLException {
@@ -55,18 +57,19 @@ public class AppointmentsController {
     @CrossOrigin
     @PostMapping(value = "/getAllAppointmentsPerUser")
     public List<Appointment>  getAllAppointmentsPerUser(
-            @RequestBody AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) {
+            @RequestBody AllAppointmentsPerUserDTO allAppointmentsPerUserDTO) throws ParseException {
 
         return appointmentTransactionManager.getAllAppointmentsPerUser(allAppointmentsPerUserDTO);
     }
 
     @CrossOrigin
-    @DeleteMapping(value = "/deleteOneAppointment")
+    @PostMapping(value = "/deleteOneAppointment")
     public void deleteOneAppointment(
             @RequestBody OneAppointmentByIdRequestDTO oneAppointmentByIdRequestDTO) {
 
         appointmentTransactionManager.deleteAppointmentPerId(oneAppointmentByIdRequestDTO);
     }
+
 
     @CrossOrigin
     @PostMapping(value = "/storeAppointment")
@@ -83,6 +86,7 @@ public class AppointmentsController {
         appointment.setAdminId(appointmentRequestDTO.getAdminId());
         appointment.setStartTime(Timestamp.valueOf(appointmentRequestDTO.getStartTime()));
         appointment.setEndTime(Timestamp.valueOf(appointmentRequestDTO.getEndTime()));
+        appointment.setEmail(appointmentRequestDTO.getEmail());
 
         return appointmentTransactionManager.storeAppointment(appointment);
     }
@@ -91,7 +95,7 @@ public class AppointmentsController {
     @GetMapping(value = "/organizations")
     private String sendGET() throws IOException, JSONException {
 
-        URL obj = new URL(ORGANIZATIONS_URL);
+        URL obj = new URL("https://hr.apografi.gov.gr/api/public/organizations");
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");
 

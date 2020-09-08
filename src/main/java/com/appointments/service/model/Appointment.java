@@ -12,6 +12,7 @@ public class Appointment {
     private String adminId;
     private Timestamp startTime;
     private Timestamp endTime;
+    private String email;
 
     public Appointment() {
     }
@@ -25,6 +26,18 @@ public class Appointment {
         this.adminId = adminId;
         this.startTime = startTime;
         this.endTime = endTime;
+    }
+
+    public Appointment(String appointmentId, String organizationSelected, String userName, String userId, String adminName, String adminId, Timestamp startTime, Timestamp endTime, String email) {
+        this.appointmentId = appointmentId;
+        this.organizationSelected = organizationSelected;
+        this.userName = userName;
+        this.userId = userId;
+        this.adminName = adminName;
+        this.adminId = adminId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.email = email;
     }
 
     public String getAppointmentId() {
@@ -89,5 +102,13 @@ public class Appointment {
 
     public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -10,6 +10,7 @@ public class AppointmentRequestDTO {
     private String adminId;
     private String startTime;
     private String endTime;
+    private String email;
 
     public AppointmentRequestDTO() {
     }
@@ -76,5 +77,13 @@ public class AppointmentRequestDTO {
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
