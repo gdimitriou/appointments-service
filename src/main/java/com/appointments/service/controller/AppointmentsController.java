@@ -95,10 +95,11 @@ public class AppointmentsController {
 
             String start = Timestamp.valueOf(appointmentRequestDTO.getStartTime()).toString();
             String end = Timestamp.valueOf(appointmentRequestDTO.getEndTime()).toString();
+            String organization = appointmentRequestDTO.getOrganizationSelected();
             String email = appointmentRequestDTO.getEmail();
 
             EmailManager emailManager = new EmailManager();
-            emailManager.sendEmailToUser(email, start, end);
+            emailManager.sendEmailToUser(email, start, end, organization);
 
             return Boolean.valueOf(true);
 
